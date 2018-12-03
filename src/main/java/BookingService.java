@@ -4,7 +4,7 @@ import java.util.Queue;
 
 public class BookingService {
 
-    public static LinkedList<BookRequest> requestList = new LinkedList<>();
+    public static volatile LinkedList<BookRequest> requestList = new LinkedList<>();
 
     public static volatile int quantityOfGeneratedRequests = 0;
     public static final int maxQuantityOfGeneratedRequests = 15;
