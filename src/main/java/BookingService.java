@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
 public class BookingService {
 
-    public static LinkedList<BookRequest> requestList = new LinkedList<>();
+    public static final LinkedList<BookRequest> requestList = new LinkedList<>();
 
     public static volatile int quantityOfGeneratedRequests = 0;
 
