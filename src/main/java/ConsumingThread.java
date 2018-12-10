@@ -1,57 +1,38 @@
-import com.sun.corba.se.impl.resolver.BootstrapResolverImpl;
-
-import java.awt.print.Book;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConsumingThread extends Thread {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConsumingThread.class);
 
     @Override
     public void run() {
 
-
         synchronized (BookingService.requestList) {
 
-            while (BookingService.quantityOfGeneratedRequests < BookingService.maxQuantityOfGeneratedRequests ||
-                BookingService.requestList.size() > 0) {
-                //currentThread().interrupt();
-
-//                System.out.println("BookingService.quantityOfGeneratedRequests = "+BookingService.quantityOfGeneratedRequests);
-//                System.out.println("BookingService.maxQuantityOfGeneratedRequests = "+BookingService.maxQuantityOfGeneratedRequests);
-//                System.out.println("BookingService.requestList.size() = "+BookingService.requestList.size());
-
-
-            //while (BookingService.quantityOfGeneratedRequests < BookingService.maxQuantityOfGeneratedRequests) {
-
-
-
-                //if (BookingService.quantityOfRequestsInQueue > 0) {
+            while (BookingService.quantityOfGeneratedRequests < BookingService.MAX_QUANTITY_OF_GENERATED_REQUESTS ||
+                    BookingService.requestList.size() > 0) {
 
                 try {
 
                     if (BookingService.requestList.size() > 0) {
+                        BookRequest bookRequest = BookingService.requestList.getFirst();
+                        logger.info("booker: #" + currentThread().getName() + ": received: " + bookRequest.getId() + ". (Length of queue = " + BookingService.requestList.size() + ")");
 
-                        BookRequest bookRequest = BookingService.requestList.removeFirst();
+                        Thread.sleep(5000);
+
+                        bookRequest = BookingService.requestList.removeFirst();
                         BookingService.requestList.notifyAll();
-
-                        System.out.println(currentThread().getName() + ". Удалили из очереди элемент: " + bookRequest.getId() + ". Размер очереди: " + BookingService.requestList.size());
-
-                    }
-
-                    Thread.sleep(5000);
-
-
-                    // Немножко бред?
-                    if (BookingService.quantityOfGeneratedRequests < BookingService.maxQuantityOfGeneratedRequests ||
-                            BookingService.requestList.size() > 0) {
+                        logger.info("booker: #" + currentThread().getName() + ": processed: " + bookRequest.getId() + ". (Length of queue = " + BookingService.requestList.size() + ")");
+                    } else if (BookingService.quantityOfGeneratedRequests < BookingService.MAX_QUANTITY_OF_GENERATED_REQUESTS) {
                         BookingService.requestList.wait();
                     }
 
-
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
-                    System.out.println("Ошибка при отправке потока в sleep, Поток: " + currentThread().getName());
+                    logger.error("consumer: #" + currentThread().getName() + ": Error in sleep");
                 }
             }
-            System.out.println(currentThread().getName()+" Консьюмер - вышли из цикла");
         }
     }
 }

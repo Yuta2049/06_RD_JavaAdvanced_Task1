@@ -1,22 +1,15 @@
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 public class BookingService {
 
-    //public static volatile LinkedList<BookRequest> requestList = new LinkedList<>();
     public static LinkedList<BookRequest> requestList = new LinkedList<>();
 
     public static volatile int quantityOfGeneratedRequests = 0;
-    public static final int maxQuantityOfGeneratedRequests = 15;
 
-    public static final int maxQuantityOfRequestsInQueue = 5;
-
-    //protected static final int maxProducersQuantity = 3;
-    //protected static final int maxConsumerQuantity = 6;
+    public static final int MAX_QUANTITY_OF_GENERATED_REQUESTS = 15;
+    public static final int MAX_QUANTITY_OF_REQUESTS_IN_QUEUE = 5;
 
     public void startGeneration() {
-
         ProducingThread producingThread1 = new ProducingThread();
         producingThread1.start();
 
@@ -43,7 +36,5 @@ public class BookingService {
 
         ConsumingThread consumingThread6 = new ConsumingThread();
         consumingThread6.start();
-
     }
-
 }
